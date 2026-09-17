@@ -1,3 +1,4 @@
+from sage.combinat.cartesian_product import CartesianProduct_iters
 
 def numtopf(num, n=False):
     if not n:
@@ -61,16 +62,51 @@ def outcome(pf):
                 break
     return outcome
 
+def friendship_outcome(pf, graph):
+    pass
+
 def displacement(pf):
     out = outcome(pf)
     tagged = sorted(list(zip(out, list(range(len(pf))))))
     return [tagged[i][1]+1 - pf[i] for i in range(len(pf))]
 
+def preimage(perm):
+    n = len(perm)
+    options = [[] for i in range(n)]
+    for i in range(n):
+        for j in range(i, -1, -1):
+            if perm[j] <= perm[i]:
+                options[perm[i]-1].append(j+1)
+            else:
+                break
+    prefs = list(cartesian_product(options))
+    return prefs
+
+def friendship_preimage(perm, graph):
+    n = len(perm)
+    options = [[] for i in range(n)]
+    for i in range(n):
+        for j in range(i, -1, -1):
+            if (perm[j] <= perm[i]):
+                options[perm[i]-1].append(j+1)
+            elif (perm[j+1] <= perm[i]) and (perm[j+1] not in graph.neighbors(perm[i], closed=True)):
+                options[perm[i]-1].append(j+1)
+            elif (j > 0) and (perm[j-1] <= perm[i]) and (perm[j-1] not in graph.neighbors(perm[i], closed=True)):
+                options[perm[i]-1].append(j+1)
+            else:
+                break
+    prefs = list(cartesian_product(options))
+    return prefs
+
 n = 4
-# pfs = [numtopf(i,n) for i in range((n+1)^(n-1))]
-# for pf in pfs:
-#     paths = all_paths_for_pf(pf)
-#     print(pf, "->", ["--".join([str(v) for v in path]) for path in paths])
-pf = [2,4,2,1]
-print(outcome(pf))
-print(displacement(pf))
+labels = list(Permutations(n))
+paths = {lbl : Graph([(lbl[i], lbl[i+1]) for i in range(n-1)]) for lbl in labels}
+counts = dict()
+for lbl in labels:
+    pfs = all_pfs_for_graph(paths[lbl])
+    if not tuple(reversed(lbl)) in counts.keys():
+        counts[tuple(lbl)] = pfs
+
+for lbl in counts.keys():
+    print("--".join([str(v) for v in lbl]), "->", len(counts[lbl]))
+
