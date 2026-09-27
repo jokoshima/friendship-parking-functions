@@ -108,5 +108,6 @@ for lbl in labels:
         counts[tuple(lbl)] = pfs
 
 for lbl in counts.keys():
-    print("--".join([str(v) for v in lbl]), "->", len(counts[lbl]))
+    print("--".join([str(v) for v in lbl]), "->", counts[lbl])
+    print()
 
