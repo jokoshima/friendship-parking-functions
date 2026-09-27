@@ -1,5 +1,8 @@
 """
-
+Returns all possible outcomes for the parking function 1^n
+over the set of all labelled graphs on n vertices.
+The code computes these outcomes using a bijection to 
+involutions, proven by Aditya Khanna.
 """
 def possible_outcomes(n):
     invs = []
@@ -19,7 +22,18 @@ def possible_outcomes(n):
     return outcomes
 
 """
+Given an outcome of the friendship parking function 1^n, returns
+the number of labelled graphs on n vertices on which 1^n is
+a friendship parking function with that outcome.
 
+This function cannot return the graphs themselves - while it 
+is possible to adapt it to do so, that adaptation is complicated, 
+and the number of such graphs grows very quickly to be useful.
+
+The function relies on a proof of the count by counting "adjacencies"
+in the outcome, and the logic reflects that. The logic for finding
+the entry to start counting from, while efficient, is difficult to 
+read and might benefit from a more straightforward rewrite.
 """
 def graphs_per_outcome(out):
     # Initialization adjusted to not have to consider car 1
@@ -69,10 +83,10 @@ def graphs_per_outcome(out):
         claws.append(2^cars_behind)
     return prod(claws)
 
-# total = 1
-# for out in outcomes:
-#     total *= graphs_per_outcome_count(out)
-# print(total)
-
-print(graphs_per_outcome([1,9,2,3,8,4,5,7,6]))
-print(graphs_per_outcome([1,8,2,9,3,7,4,6,5]))
+total = []
+outcomes = possible_outcomes(4)
+for out in outcomes:
+    count = graphs_per_outcome(out)
+    print(out, count)
+    total.append(count)
+print(sum(total))
