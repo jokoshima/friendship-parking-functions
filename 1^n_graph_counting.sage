@@ -83,10 +83,12 @@ def graphs_per_outcome(out):
         claws.append(2^cars_behind)
     return prod(claws)
 
-total = []
-outcomes = possible_outcomes(4)
-for out in outcomes:
-    count = graphs_per_outcome(out)
-    print(out, count)
-    total.append(count)
-print(sum(total))
+
+
+for i in range(15):
+    total = []
+    outcomes = possible_outcomes(i+1)
+    for out in outcomes:
+        count = graphs_per_outcome(out)
+        total.append(count)
+    print(numerical_approx(sum(total) / 2^(binomial(i+1, 2))))

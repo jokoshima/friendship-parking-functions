@@ -63,7 +63,26 @@ def outcome(pf):
     return outcome
 
 def friendship_outcome(pf, graph):
+    n = len(pf)
+    out = [0]*n
+    for i in range(n):
+        for j in range(pf[i]-1, n):
+            if j == 0 and (out[j+1] == 0 or out[j+1] in graph.neighbors(i+1)):
+                out[j] = i+1
+                break
+            elif j == n-1 and (out[j-1] == 0 or out[j-1] in graph.neighbors(i+1)):
+                out[j] = i+1
+                break
+            elif not out[j] and (out[j-1] == 0 or out[j-1] in graph.neighbors(i+1)) and (out[j+1] == 0 or out[j+1] in graph.neighbors(i+1)):
+                out[j] = i+1
+                break
+    return out
+
+def all_friendship_outcomes(pf):
     pass
+    # This should produce outcomes over ALL GRAPHS, so you should NOT generate the graphs!
+    # Test on pf = (1,1,1,...,1) - should get "involutions" (see Aditya's proof)
+    # This will incode some (general?) rule about outcomes
 
 def displacement(pf):
     out = outcome(pf)
@@ -98,16 +117,17 @@ def friendship_preimage(perm, graph):
     prefs = list(cartesian_product(options))
     return prefs
 
-n = 4
-labels = list(Permutations(n))
-paths = {lbl : Graph([(lbl[i], lbl[i+1]) for i in range(n-1)]) for lbl in labels}
-counts = dict()
-for lbl in labels:
-    pfs = all_pfs_for_graph(paths[lbl])
-    if not tuple(reversed(lbl)) in counts.keys():
-        counts[tuple(lbl)] = pfs
+# n = 4
+# labels = list(Permutations(n))
+# paths = {lbl : Graph([(lbl[i], lbl[i+1]) for i in range(n-1)]) for lbl in labels}
+# counts = dict()
+# for lbl in labels:
+#     pfs = all_pfs_for_graph(paths[lbl])
+#     if not tuple(reversed(lbl)) in counts.keys():
+#         counts[tuple(lbl)] = pfs
 
-for lbl in counts.keys():
-    print("--".join([str(v) for v in lbl]), "->", counts[lbl])
-    print()
+# for lbl in counts.keys():
+#     print("--".join([str(v) for v in lbl]), "->", counts[lbl])
+#     print()
 
+print(friendship_outcome([1,1,1,1], Graph([(1,3), (3,2), (2,4)])))
